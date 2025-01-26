@@ -1,34 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PES eSports Room Registration</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PES Esports Match Registration</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>PES eSports Room Registration</h1>
-    <form id="registrationForm">
-      <div class="form-group">
-        <label for="pesId">PES ID</label>
-        <input type="text" id="pesId" placeholder="Enter PES ID" required>
-      </div>
-      <div class="form-group">
-        <label for="phoneNumber">Phone Number</label>
-        <input type="text" id="phoneNumber" placeholder="Enter Phone Number" required>
-      </div>
-      <div class="form-group">
-        <label for="roomNumber">Room Number</label>
-        <input type="text" id="roomNumber" placeholder="Enter Room Number" required>
-      </div>
-      <button type="submit">Submit</button>
-    </form>
-  </div>
+    <div class="container">
+        <div class="form-container">
+            <h1>PES Esports Match Registration</h1>
+            <form action="submit_data_to_firebase.php" method="POST">
+                <label for="pesid">PES ID:</label>
+                <input type="text" id="pesid" name="pesid" required>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-  <script src="script.js"></script>
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" required>
+
+                <label for="roomnumber">Room Number:</label>
+                <input type="number" id="roomnumber" name="roomnumber" required>
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
