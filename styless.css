@@ -33,32 +33,6 @@ body {
     }
 }
 
-/* Soccer ball animation (using CSS) */
-@keyframes soccerBallMove {
-    0% {
-        transform: translateY(0) rotate(0deg);
-    }
-    50% {
-        transform: translateY(-100px) rotate(180deg);
-    }
-    100% {
-        transform: translateY(0) rotate(360deg);
-    }
-}
-
-/* Add soccer ball visual effect */
-.soccer-ball {
-    position: absolute;
-    bottom: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 80px;
-    background: url('soccer-ball.png') no-repeat center center;
-    background-size: contain;
-    animation: soccerBallMove 4s ease-in-out infinite;
-}
-
 /* Container */
 .container {
     display: flex;
@@ -75,7 +49,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
 }
 
 h1 {
@@ -83,37 +57,38 @@ h1 {
     margin-bottom: 20px;
 }
 
-label {
-    font-size: 1rem;
-    margin-bottom: 10px;
-    display: block;
+ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 20px 0;
 }
 
-input[type="text"], input[type="number"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #fff;
-    border-radius: 5px;
-    background: #333;
-    color: #fff;
-    font-size: 1rem;
+ul li {
+    margin: 10px 0;
 }
 
-button {
-    background-color: #1CB5E0;
-    color: white;
-    padding: 10px 20px;
-    font-size: 1.2rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    transition: background-color 0.3s ease;
+footer {
+    text-align: center;
+    padding: 20px;
 }
 
-button:hover {
-    background-color: #0a9db7;
+footer ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+footer li {
+    display: inline;
+    margin: 0 10px;
+}
+
+footer a {
+    color: #1CB5E0;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
 }
 
 /* Smaller Footer Section */
@@ -140,7 +115,6 @@ button:hover {
 .small-footer a {
     color: #1CB5E0;
     text-decoration: none;
-    font-size: 1rem;
 }
 
 .small-footer a:hover {
@@ -163,16 +137,7 @@ body {
         padding: 15px;
     }
 
-    label {
-        font-size: 0.9rem;
-    }
-
-    input[type="text"], input[type="number"] {
-        font-size: 0.9rem;
-    }
-
-    button {
+    ul li {
         font-size: 1rem;
     }
 }
-
