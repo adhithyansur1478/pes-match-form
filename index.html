@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PES Esports Match Registration</title>
-    <!-- Link to external CSS file -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
 </head>
 <body>
     <div class="container">
-        <div class="form-container">
+        <div id="form-container" class="form-container">
             <h1>PES Match Registration</h1>
-            <form action="submit_data_to_firebase.php" method="POST">
+            <form id="matchForm">
                 <label for="pesid">PES ID:</label>
                 <input type="text" id="pesid" name="pesid" required>
 
@@ -24,9 +26,11 @@
                 <button type="submit">Submit</button>
             </form>
         </div>
+
+        <!-- Message for closed matches -->
+        <div id="message" style="display: none; color: red; font-size: 18px;"></div>
     </div>
 
-    <!-- Smaller Footer Section -->
     <footer class="small-footer">
         <ul>
             <li><a href="contact.html">Contact Us</a></li>
@@ -34,7 +38,85 @@
             <li><a href="refund.html">Refund Policy</a></li>
         </ul>
     </footer>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+  apiKey: "AIzaSyB0XNxFP7npEaXDhhbynAl-4fcFXBSKlW4",
+  authDomain: "betproject-d69cd.firebaseapp.com",
+  databaseURL: "https://betproject-d69cd-default-rtdb.firebaseio.com",
+  projectId: "betproject-d69cd",
+  storageBucket: "betproject-d69cd.firebasestorage.app",
+  messagingSenderId: "991851561202",
+  appId: "1:991851561202:web:56244535a998336ce4906b",
+  measurementId: "G-3FHL5483T4"
+};
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Get uniqueId from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const uniqueId = urlParams.get("uniqueId");
+
+        if (uniqueId) {
+            const matchRef = db.ref("responses/" + uniqueId);
+            const matchAcceptRef = db.ref("match_accept/" + uniqueId);
+
+            // Check Match Status
+            matchRef.once("value").then((snapshot) => {
+                const matchData = snapshot.val();
+
+                if (matchData && matchData.status === "open") {
+                    document.getElementById("form-container").style.display = "block";
+                } else {
+                    document.getElementById("message").innerText = "This match is already taken.";
+                    document.getElementById("message").style.display = "block";
+                    document.getElementById("form-container").style.display = "none";
+                }
+            });
+        } else {
+            document.getElementById("message").innerText = "Invalid match link.";
+            document.getElementById("message").style.display = "block";
+            document.getElementById("form-container").style.display = "none";
+        }
+
+        // Handle Form Submission
+        document.getElementById("matchForm").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const pesId = document.getElementById("pesid").value;
+            const phone = document.getElementById("phone").value;
+            const roomNumber = document.getElementById("roomnumber").value;
+
+            if (uniqueId) {
+                matchRef.once("value").then((snapshot) => {
+                    const matchData = snapshot.val();
+
+                    if (matchData && matchData.status === "open") {
+                        // Update Firebase: Close Match
+                        matchRef.update({
+                            status: "closed"
+                        });
+
+                        // Store Form Data in match_accept
+                        matchAcceptRef.set({
+                            pesid: pesId,
+                            phone: phone,
+                            room_number: roomNumber,
+                            timestamp: new Date().toISOString()
+                        }).then(() => {
+                            alert("Match successfully joined!");
+                            window.location.href = "match_full.html"; // Redirect to a confirmation page
+                        });
+                    } else {
+                        alert("This match is already taken.");
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
-
 
