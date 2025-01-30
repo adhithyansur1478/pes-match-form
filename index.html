@@ -60,6 +60,8 @@
         const urlParams = new URLSearchParams(window.location.search);
         const uniqueId = urlParams.get("match_id");
         console.log("Extracted uniqueId:", uniqueId); // Debugging log
+         
+        let matchRef, matchAcceptRef;
 
         if (uniqueId) {
             const matchRef = ref(db, "responses/" + uniqueId);
