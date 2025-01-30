@@ -61,76 +61,66 @@
         const uniqueId = urlParams.get("match_id");
         console.log("Extracted uniqueId:", uniqueId); // Debugging log
          
-        let matchRef, matchAcceptRef;
+       let matchRef, matchAcceptRef;
 
-        if (uniqueId) {
-            const matchRef = ref(db, "responses/" + uniqueId);
-            const matchAcceptRef = ref(db, "match_accept/" + uniqueId);
+if (uniqueId) {
+    matchRef = db.ref("responses/" + uniqueId);
+    matchAcceptRef = db.ref("match_accept/" + uniqueId);
 
-            // Check Match Status
-            get(matchRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const matchData = snapshot.val();
-                    console.log("Match data:", matchData); // Debugging log
+    // Check Match Status
+    matchRef.once("value").then((snapshot) => {
+        const matchData = snapshot.val();
 
-                    if (matchData.status === "open") {
-                        document.getElementById("form-container").style.display = "block";
-                    } else {
-                        document.getElementById("message").innerText = "This match is already taken.";
-                        document.getElementById("message").style.display = "block";
-                    }
-                } else {
-                    console.warn("Match not found in database");
-                    document.getElementById("message").innerText = "Invalid match link.";
-                    document.getElementById("message").style.display = "block";
-                }
-            }).catch((error) => {
-                console.error("Error fetching match data:", error);
-            });
+        if (matchData && matchData.status === "open") {
+            document.getElementById("form-container").style.display = "block";
         } else {
-            console.warn("No uniqueId found in URL");
-            document.getElementById("message").innerText = "Invalid match link.";
+            document.getElementById("message").innerText = "This match is already taken.";
             document.getElementById("message").style.display = "block";
+            document.getElementById("form-container").style.display = "none";
         }
+    });
+} else {
+    document.getElementById("message").innerText = "Invalid match link.";
+    document.getElementById("message").style.display = "block";
+    document.getElementById("form-container").style.display = "none";
+}
 
-        // Handle Form Submission
-        document.getElementById("matchForm").addEventListener("submit", function (event) {
-            event.preventDefault();
+// Handle Form Submission
+document.getElementById("matchForm").addEventListener("submit", function (event) {
+    event.preventDefault(); // Prevent default form submission
 
-            const pesId = document.getElementById("pesid").value;
-            const phone = document.getElementById("phone").value;
-            const roomNumber = document.getElementById("roomnumber").value;
+    const pesId = document.getElementById("pesid").value;
+    const phone = document.getElementById("phone").value;
+    const roomNumber = document.getElementById("roomnumber").value;
 
-            if (uniqueId) {
-                get(matchRef).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const matchData = snapshot.val();
+    if (uniqueId && matchRef) {
+        matchRef.once("value").then((snapshot) => {
+            const matchData = snapshot.val();
 
-                        if (matchData.status === "open") {
-                            // Update Firebase: Close Match
-                            update(matchRef, { status: "closed" });
-
-                            // Store Form Data in match_accept
-                            set(matchAcceptRef, {
-                                pesid: pesId,
-                                phone: phone,
-                                room_number: roomNumber,
-                                timestamp: new Date().toISOString()
-                            }).then(() => {
-                                alert("Match successfully joined!");
-                                window.location.href = "match_full.html";
-                            });
-                        } else {
-                            alert("This match is already taken.");
-                        }
-                    } else {
-                        alert("Match not found.");
-                    }
-                }).catch((error) => {
-                    console.error("Error submitting form:", error);
+            if (matchData && matchData.status === "open") {
+                // Update Firebase: Close Match
+                matchRef.update({
+                    status: "closed"
                 });
+
+                // Store Form Data in match_accept
+                matchAcceptRef.set({
+                    pesid: pesId,
+                    phone: phone,
+                    room_number: roomNumber,
+                    timestamp: new Date().toISOString()
+                }).then(() => {
+                    alert("Match successfully joined!");
+                    window.location.href = "match_full.html"; // Redirect to a confirmation page
+                });
+            } else {
+                alert("This match is already taken.");
             }
         });
+    } else {
+        alert("Invalid match link.");
+    }
+});
     </script>
 </body>
 </html>
