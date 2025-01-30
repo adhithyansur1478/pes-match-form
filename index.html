@@ -64,8 +64,8 @@
        let matchRef, matchAcceptRef;
 
 if (uniqueId) {
-    matchRef = db.ref("responses/" + uniqueId);
-    matchAcceptRef = db.ref("match_accept/" + uniqueId);
+    matchRef = ref(db,"responses/" + uniqueId);
+    matchAcceptRef = ref(db,"match_accept/" + uniqueId);
 
     // Check Match Status
     matchRef.once("value").then((snapshot) => {
