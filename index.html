@@ -5,11 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PES Esports Match Registration</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Firebase SDK -->
-    <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-    import { getDatabase, ref, get, set, update } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
-    </script>
 </head>
 <body>
     <div class="container">
@@ -41,33 +36,37 @@
         </ul>
     </footer>
 
-    <script>
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+        import { getDatabase, ref, get, set, update } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+
         // Firebase Configuration
         const firebaseConfig = {
-  apiKey: "AIzaSyB0XNxFP7npEaXDhhbynAl-4fcFXBSKlW4",
-  authDomain: "betproject-d69cd.firebaseapp.com",
-  databaseURL: "https://betproject-d69cd-default-rtdb.firebaseio.com",
-  projectId: "betproject-d69cd",
-  storageBucket: "betproject-d69cd.firebasestorage.app",
-  messagingSenderId: "991851561202",
-  appId: "1:991851561202:web:56244535a998336ce4906b",
-  measurementId: "G-3FHL5483T4"
-};
+            apiKey: "AIzaSyB0XNxFP7npEaXDhhbynAl-4fcFXBSKlW4",
+            authDomain: "betproject-d69cd.firebaseapp.com",
+            databaseURL: "https://betproject-d69cd-default-rtdb.firebaseio.com",
+            projectId: "betproject-d69cd",
+            storageBucket: "betproject-d69cd.firebasestorage.app",
+            messagingSenderId: "991851561202",
+            appId: "1:991851561202:web:56244535a998336ce4906b",
+            measurementId: "G-3FHL5483T4"
+        };
 
         // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.database(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
         // Get uniqueId from URL
         const urlParams = new URLSearchParams(window.location.search);
         const uniqueId = urlParams.get("uniqueId");
 
         if (uniqueId) {
-            const matchRef = db.ref("responses/" + uniqueId);
-            const matchAcceptRef = db.ref("match_accept/" + uniqueId);
+            const matchRef = ref(db, "responses/" + uniqueId);
+            const matchAcceptRef = ref(db, "match_accept/" + uniqueId);
 
             // Check Match Status
-            matchRef.once("value").then((snapshot) => {
+            get(matchRef).then((snapshot) => {
                 const matchData = snapshot.val();
 
                 if (matchData && matchData.status === "open") {
@@ -93,17 +92,15 @@
             const roomNumber = document.getElementById("roomnumber").value;
 
             if (uniqueId) {
-                matchRef.once("value").then((snapshot) => {
+                get(matchRef).then((snapshot) => {
                     const matchData = snapshot.val();
 
                     if (matchData && matchData.status === "open") {
                         // Update Firebase: Close Match
-                        matchRef.update({
-                            status: "closed"
-                        });
+                        update(matchRef, { status: "closed" });
 
                         // Store Form Data in match_accept
-                        matchAcceptRef.set({
+                        set(matchAcceptRef, {
                             pesid: pesId,
                             phone: phone,
                             room_number: roomNumber,
@@ -121,4 +118,3 @@
     </script>
 </body>
 </html>
-
