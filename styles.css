@@ -33,7 +33,7 @@ body {
     }
 }
 
-/* Soccer ball animation (using CSS) */
+/* Soccer ball animation */
 @keyframes soccerBallMove {
     0% {
         transform: translateY(0) rotate(0deg);
@@ -46,7 +46,7 @@ body {
     }
 }
 
-/* Add soccer ball visual effect */
+/* Soccer Ball Effect */
 .soccer-ball {
     position: absolute;
     bottom: 20%;
@@ -59,13 +59,26 @@ body {
     animation: soccerBallMove 4s ease-in-out infinite;
 }
 
-/* Container */
+/* Centering Container */
 .container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
     text-align: center;
+}
+
+/* ✅ Logo Styling */
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px; /* Adds space between logo and form */
+}
+
+.logo-container img {
+    width: 150px; /* Adjust size */
+    height: auto;
 }
 
 /* Form Styles */
@@ -116,7 +129,7 @@ button:hover {
     background-color: #0a9db7;
 }
 
-/* Smaller Footer Section */
+/* Footer Section */
 .small-footer {
     background: rgba(0, 0, 0, 0.7);
     padding: 10px 0;
@@ -174,5 +187,11 @@ body {
     button {
         font-size: 1rem;
     }
+
+    .logo-container img {
+        width: 120px; /* Adjusted for mobile */
+    }
 }
+
+
 
