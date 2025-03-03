@@ -74,6 +74,7 @@ body {
     display: flex;
     justify-content: center;
     margin-bottom: 15px; /* Adds space between logo and form */
+    
 }
 
 .logo-container img {

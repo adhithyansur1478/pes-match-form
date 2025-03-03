@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PES Betting Form</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Full Height */
+        html, body {
+            height: 100%;
+        }
+
+        /* Background with animated effect */
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: white;
+            background: linear-gradient(135deg, #1CB5E0, #000046);
+            animation: backgroundMove 5s infinite linear;
+            position: relative;
+            overflow: hidden;
+            padding-bottom: 40px;
+        }
+
+        /* Animation for moving background */
+        @keyframes backgroundMove {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        /* Centering Container */
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+        }
+
+        /* Form Styles */
+        .form-container {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #fff;
+            border-radius: 5px;
+            background: #333;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .live-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+html, body {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+}
+
+/* ✅ Logo Styling */
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px; /* Adds space between logo and form */
+    padding-top: 30px; /* Added padding above the logo */
+}
+
+.logo-container img {
+    width: 150px; /* Adjust size */
+    height: auto;
+}
+
+        button {
+            background-color: #1CB5E0;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        button:disabled {
+            background: grey;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+ <!-- Logo Section -->
+        <div class="logo-container">
+            <img src="logo.png" alt="PesMatchMaker Logo"> <!-- Replace with actual logo URL -->
+        </div>
+
+        <div class="form-container">
+            <h1>EVENT REGISTERATION FORM</h1>
+            <label for="pesid">PES ID:</label>
+            <input type="text" id="pesid" required>
+
+            <label for="phone">Phone Number:</label>
+            <input type="text" id="phone" required>
+
+            <label>Bet Amount:</label>
+            <input type="radio" name="bet" value="20"> 20
+            <input type="radio" name="bet" value="30"> 30
+            <input type="radio" name="bet" value="50"> 50
+            <input type="radio" name="bet" value="70"> 70
+            <input type="radio" name="bet" value="90"> 90
+            
+
+            <div class="live-section" id="live-info">Select a bet amount to see details.</div>
+            
+            <button id="submit-btn" disabled>Submit</button>
+        </div>
+    </div>
+
+    <script type="module">
+
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { push } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        // ✅ Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0XNxFP7npEaXDhhbynAl-4fcFXBSKlW4",
+            authDomain: "betproject-d69cd.firebaseapp.com",
+            databaseURL: "https://betproject-d69cd-default-rtdb.firebaseio.com",
+            projectId: "betproject-d69cd",
+            storageBucket: "betproject-d69cd.firebasestorage.app",
+            messagingSenderId: "991851561202",
+            appId: "1:991851561202:web:56244535a998336ce4906b",
+            measurementId: "G-3FHL5483T4"
+        };
+
+        // ✅ Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const matchRef = ref(db, "responses");
+        const avail_matchRef = ref(db, "av_match");
+
+        function updateAvailability(betAmount, isAvailable) {
+    const matchRef = ref(db, `av_matches/${betAmount}/available`);
+
+    set(matchRef, isAvailable).then(() => {
+        console.log(`✅ Availability updated: ${betAmount} → ${isAvailable}`);
+    }).catch((error) => {
+        console.error("❌ Error updating availability:", error);
+    });
+}
+
+
+function checkAvailability(betAmount) {
+    const availabilityRef = ref(db, `av_matches/${betAmount}/available`);
+
+    return get(availabilityRef) // ✅ Return the promise
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                return snapshot.val(); // ✅ Return the actual value (true/false)
+            } 
+            return false; // ✅ If data doesn't exist, assume not available
+        })
+        .catch(error => {
+            console.error("Error checking availability:", error);
+            return false; // ✅ Return false if there's an error
+        });
+}
+
+
+
+        
+
+        const betRadios = document.querySelectorAll('input[name="bet"]');
+        const liveInfo = document.getElementById('live-info');
+        const submitBtn = document.getElementById('submit-btn');
+        
+        betRadios.forEach(radio => {
+    radio.addEventListener('change', async () => {
+        let betAmount = parseInt(radio.value); // Convert to number
+        let entryFee = betAmount / 2;
+        let serv_chrg = 0;
+
+        // Check match availability only once
+        let isavail = await checkAvailability(betAmount);
+
+        // Determine service charge based on bet amount
+        if (betAmount == 30 || betAmount == 20) {
+            serv_chrg = 5;
+        } else if (betAmount == 50 || betAmount == 70 || betAmount == 90) {
+            serv_chrg = 10;
+        }
+
+        let winningAmount = betAmount - serv_chrg;
+
+        console.log(`${betAmount}:`, isavail);
+
+        // Update UI based on availability
+        if (isavail) {
+            liveInfo.innerHTML = `The Match for ₹${betAmount} is already available.<br>
+                Can't create a match when a match for the same amount already exists.<br>
+                Feel Free To Play That Match.`;
+            submitBtn.disabled = true;
+        } else {
+            liveInfo.innerHTML = `You are choosing to have a match for: ₹${betAmount}<br>
+                Registration Fee: ₹${entryFee}<br>
+                Winning Amount: ₹${winningAmount}`;
+            submitBtn.disabled = false;
+        }
+    });
+});
+        
+            
+         // Fetch API will run when Submit button is clicked
+    submitBtn.addEventListener("click", function() {
+        var pesid = document.getElementById('pesid').value.trim();
+        var phn_num = document.getElementById('phone').value.trim();
+
+        if (!pesid) {
+        alert("Please enter your PES ID.");
+        return;
+    }
+
+    if (!phn_num) {
+        alert("Please enter your Phone Number.");
+        return;
+    }
+
+    if(phn_num.length<10||phn_num.length>10){
+        alert("Please enter a valid Phone Number without countrycode.");
+        return;
+    }
+        
+        if (betAmount === 0) {
+            alert("Please select a bet amount before submitting.");
+            return;
+        }
+
+        fetch("https://script.google.com/macros/s/AKfycbzHSQCHLBx1gFmyC7VwVQKqQonanvno550XrZWTWwz51fdvnKBUOUulj7cLOpQ5-Lsj/exec", {
+            method: "POST",
+            mode: "no-cors",  // 🚨 Request will be sent, but response is hidden
+            headers: {
+                "Content-Type": "application/json",
+            },
+            
+            body: JSON.stringify({
+                betamount:betAmount,
+                pesid:pesid,
+                phoneNumber:phn_num,
+                timestamp: new Date().toISOString()
+                
+            }),
+        })
+
+        const newMatchRef = push(matchRef)
+        var pesid = document.getElementById('pesid').value;
+        var phn_num = document.getElementById('phone').value;
+
+
+        
+
+        set(newMatchRef, {
+
+            betamount:betAmount,
+            pesid:pesid,
+            phoneNumber:phn_num,
+            status:"open",
+            timestamp: new Date().toISOString()
+                            }).then(() => {
+                                updateAvailability(betAmount,true)
+                                alert("Match successfully joined!");
+                                window.location.href = "match_full.html"; // Redirect to a confirmation page
+                            }).catch((error) => {
+                                console.error("Error saving data:", error);
+                            });
+        
+    });
+        
+        
+;
+
+</script>
+</body>   
+</html>

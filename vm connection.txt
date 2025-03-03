@@ -1,0 +1,7 @@
+
+
+adhi@4.247.159.67
+
+
+ssh -i C:\Users\suresh\Downloads\matchmakerazurekey.pem adhi@4.247.159.67 --------code to connect to vm
+

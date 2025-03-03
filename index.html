@@ -77,6 +77,7 @@
         if (uniqueId) {
             const matchRef = ref(db, "responses/" + uniqueId);
             const matchAcceptRef = ref(db, "match_accept/" + uniqueId);
+            
 
             // ✅ Check Match Status
             get(matchRef).then((snapshot) => {
@@ -111,6 +112,10 @@
                 get(matchRef).then((snapshot) => {
                     if (snapshot.exists()) {
                         const matchData = snapshot.val();
+                        var match_amnt = matchData.betamount
+
+                        const av_matchref = ref(db,"av_matches/" + match_amnt)
+                        update(av_matchref, { available: false });
 
                         if (matchData.status === "open") {
                             // ✅ Update Firebase: Close Match
