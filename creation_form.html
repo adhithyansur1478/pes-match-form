@@ -306,7 +306,7 @@ function checkAvailability(betAmount) {
                             }).then(() => {
                                 updateAvailability(betAmount,true)
                                 alert("Match successfully joined!");
-                                window.location.href = "match_full.html"; // Redirect to a confirmation page
+                                //window.location.href = "match_full.html"; // Redirect to a confirmation page
                             }).catch((error) => {
                                 console.error("Error saving data:", error);
                             });
