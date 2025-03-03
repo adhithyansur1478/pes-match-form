@@ -211,10 +211,12 @@ function checkAvailability(betAmount) {
         const betRadios = document.querySelectorAll('input[name="bet"]');
         const liveInfo = document.getElementById('live-info');
         const submitBtn = document.getElementById('submit-btn');
+
+        let betAmount = 0; // Declare globally
         
         betRadios.forEach(radio => {
     radio.addEventListener('change', async () => {
-        let betAmount = parseInt(radio.value); // Convert to number
+        betAmount = parseInt(radio.value); // Convert to number
         let entryFee = betAmount / 2;
         let serv_chrg = 0;
 
@@ -250,8 +252,9 @@ function checkAvailability(betAmount) {
             
          // Fetch API will run when Submit button is clicked
     submitBtn.addEventListener("click", function() {
-        var pesid = document.getElementById('pesid').value.trim();
-        var phn_num = document.getElementById('phone').value.trim();
+        var pesid = document.getElementById('pesid').value;
+        var phn_num = document.getElementById('phone').value;
+        
 
         if (!pesid) {
         alert("Please enter your PES ID.");
@@ -290,8 +293,8 @@ function checkAvailability(betAmount) {
         })
 
         const newMatchRef = push(matchRef)
-        var pesid = document.getElementById('pesid').value;
-        var phn_num = document.getElementById('phone').value;
+        
+        //var betAmount = parseInt(radio.value); // Convert to number
 
 
         
