@@ -156,6 +156,10 @@ footer {
 }
 
 
+/* Ensure other content is not hidden behind the footer */
+body {
+    padding-bottom: 40px;
+}
 
 
 
