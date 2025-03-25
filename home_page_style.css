@@ -124,6 +124,44 @@ footer {
     margin-top: 20px;
 }
 
+/* Footer Section */
+.small-footer {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    text-align: center;
+    color: white;
+}
+
+.small-footer ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.small-footer li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.small-footer a {
+    color: #1CB5E0;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.small-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Ensure other content is not hidden behind the footer */
+body {
+    padding-bottom: 40px;
+}
+
+
+
 /* Responsive Styles */
 @media (max-width: 768px) {
     h1 {
