@@ -277,46 +277,21 @@ function checkAvailability(betAmount) {
             alert("Please select a bet amount before submitting.");
             return;
         }
+    
+     // Save data for Page C
+  // Page A (before redirect)
+localStorage.setItem("pesid", pesid);
+localStorage.setItem("phone", phn_num);
+localStorage.setItem("betamount", betAmount);
+
+
+
+
+   // Redirect to payment page (Page B or C)
+  window.location.href = "payment_page.html"; // or open in popup
 
         
 
-        fetch("https://script.google.com/macros/s/AKfycbzHSQCHLBx1gFmyC7VwVQKqQonanvno550XrZWTWwz51fdvnKBUOUulj7cLOpQ5-Lsj/exec", {
-            method: "POST",
-            mode: "no-cors",  // 🚨 Request will be sent, but response is hidden
-            headers: {
-                "Content-Type": "application/json",
-            },
-            
-            body: JSON.stringify({
-                betamount:betAmount,
-                pesid:pesid,
-                phoneNumber:phn_num,
-                timestamp: new Date().toISOString()
-                
-            }),
-        })
-
-        const newMatchRef = push(matchRef)
-        
-        //var betAmount = parseInt(radio.value); // Convert to number
-
-
-        
-
-        set(newMatchRef, {
-
-            betamount:betAmount,
-            pesid:pesid,
-            phoneNumber:phn_num,
-            status:"open",
-            timestamp: new Date().toISOString()
-                            }).then(() => {
-                                updateAvailability(betAmount,true)
-                                alert("Match successfully joined!");
-                                //window.location.href = "match_full.html"; // Redirect to a confirmation page
-                            }).catch((error) => {
-                                console.error("Error saving data:", error);
-                            });
         
     });
         
