@@ -163,6 +163,14 @@ function checkAvailability(betAmount) {
     const paymentSuccess = getQueryParam('success'); // expects 'true' if payment succeeded
     const contentDiv = document.getElementById('content');
 
+    const paymentStarted = localStorage.getItem("paymentStarted");
+
+if (paymentStarted === "true" && paymentSuccess !== "true") {
+  alert("Payment was not completed. Redirecting...");
+  localStorage.removeItem("paymentStarted");
+  window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+}
+
     if (paymentSuccess === 'true') {
       // Show success message
       contentDiv.innerHTML = `
@@ -290,6 +298,7 @@ localStorage.removeItem("betamount")
     // Payment button action
     window.proceedToPayment = function() {
       paymentInProgress = true;  // Disable blocking
+      localStorage.setItem("paymentStarted", "true"); // 👈 Set payment started
       // Redirect to Razorpay payment page silently
       window.location.href = "https://rzp.io/rzp/fjNkhqBK"; // Replace with your Razorpay link
     }
