@@ -245,6 +245,18 @@ localStorage.removeItem("betamount")
     // Flag to track if payment is in progress
     let paymentInProgress = false;
 
+
+    // Push an extra state into history so back button can be detected
+history.pushState({ page: 1 }, "", "");
+
+window.onpopstate = function (event) {
+  if (!paymentInProgress) {
+    // User hit the back button before payment
+    alert("Payment cancelled.");
+    window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+  }
+};
+
     // Block navigation only if payment is NOT in progress
     function blockNavigation() {
       if (!paymentInProgress) {
