@@ -289,13 +289,7 @@ localStorage.setItem("betamount", betAmount);
 
 
 
-   const paymentWindow = window.open("payment_page.html", "_blank");
-
-  // Fallback: if window couldn't open (popup blocker), show error
-  if (!paymentWindow) {
-    alert("Please allow popups to proceed to payment.");
-    return;
-  }
+window.location.href = "payment_page.html";
 
         
 
