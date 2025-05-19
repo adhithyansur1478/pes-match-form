@@ -254,18 +254,29 @@ document.addEventListener("visibilitychange", function () {
   }
 });
 
-// Push dummy state to trap back
-  history.pushState(null, null, location.href);
+// Detect back button or navigation
+history.pushState(null, null, location.href);
+window.addEventListener("popstate", function () {
+  cancelAndTryClose("Back button pressed");
+});
 
-  window.addEventListener('popstate', function () {
-    // Close tab only if opened via JS (will fail if manually opened)
-    window.close();
 
-    // As a fallback if window.close() is blocked (e.g., not opened via window.open)
-    setTimeout(() => {
-      document.body.innerHTML = '<h2>Payment cancelled. Please close this tab.</h2>';
-    }, 100);
-  });
+// Cancel payment and try closing
+function cancelAndTryClose(reason) {
+  alert(reason + ". Payment cancelled.");
+  localStorage.removeItem("paymentStarted");
+
+  // Try to close the window
+  window.close();
+
+  // If that fails, show a fallback message
+  setTimeout(() => {
+    document.body.innerHTML = `
+      <h2>Payment cancelled. Please close this tab.</h2>
+      <button onclick="window.close()">Close Tab</button>
+    `;
+  }, 100);
+}
 
 // Detect refresh (type 1 means reload)
 if (performance.navigation.type === 1 && !paymentInProgress) {
