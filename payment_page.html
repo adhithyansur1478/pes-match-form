@@ -248,7 +248,7 @@ localStorage.removeItem("betamount")
 document.addEventListener("visibilitychange", function () {
   if (document.visibilityState === 'hidden' && !paymentInProgress) {
     console.log("User navigated away (possibly back gesture or tab switch)");
-    alert("Payment cancelled due to navigation away.");
+    alert("Payment cancelled due to closing of window.");
     localStorage.removeItem("paymentStarted");
     window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
   }
