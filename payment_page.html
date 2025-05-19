@@ -242,83 +242,64 @@ localStorage.removeItem("betamount")
     <button class="pay-button" onclick="proceedToPayment()">Pay Now</button>
   </section>
       `;
-    // Flag to track if payment is in progress
-    let paymentInProgress = false;
+   let paymentInProgress = false;
 
-
-    document.addEventListener("visibilitychange", function () {
+// Detect if user switches tab or goes to another app (useful on mobile)
+document.addEventListener("visibilitychange", function () {
   if (document.visibilityState === 'hidden' && !paymentInProgress) {
-    console.log("User navigated away (possibly back swipe)");
-    alert("backkk")
+    console.log("User navigated away (possibly back gesture or tab switch)");
+    alert("Payment cancelled due to navigation away.");
+    localStorage.removeItem("paymentStarted");
+    window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
   }
 });
 
-
-
-
-
-// Push a dummy state so back button goes to this state first
+// Push dummy states to block back navigation
 history.pushState(null, null, location.href);
 history.pushState(null, null, location.href);
 history.pushState(null, null, location.href);
 
-window.addEventListener('popstate', function (event) {
+window.addEventListener('popstate', function () {
   console.log('popstate fired');
-
   if (!paymentInProgress) {
     alert("Back button pressed. Payment cancelled.");
     localStorage.removeItem("paymentStarted");
-    // Prevent going back by going forward again
-    history.pushState(null, null, location.href);
-    
 
-    // Redirect after a short delay (to let history settle)
+    // Re-push dummy state to prevent actual back
+    history.pushState(null, null, location.href);
+
+    // Redirect after slight delay to cancel the payment
     setTimeout(() => {
       window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
     }, 100);
   } else {
-    // If payment in progress, re-push dummy state to stay on page
     history.pushState(null, null, location.href);
   }
 });
 
+// Detect refresh (type 1 means reload)
+if (performance.navigation.type === 1 && !paymentInProgress) {
+  alert("Page refresh detected. Payment cancelled.");
+  window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+}
 
+// Detect keyboard reload (F5 or Ctrl+R)
+document.addEventListener('keydown', function (e) {
+  if (!paymentInProgress && (e.key === 'F5' || (e.ctrlKey && e.key === 'r'))) {
+    e.preventDefault();
+    alert("Refresh blocked. Payment cancelled.");
+    window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+  }
+});
 
+// Warn before tab close or refresh
+window.addEventListener("beforeunload", function (e) {
+  if (!paymentInProgress) {
+    e.preventDefault();
+    e.returnValue = ''; // Needed for Chrome
+  }
+});
 
-
-
-    // Block navigation only if payment is NOT in progress
-    function blockNavigation() {
-      if (!paymentInProgress) {
-        alert("Navigation blocked. Payment cancelled.");
-        window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
-      }
-    }
-
-    if (performance.navigation.type === 1 && !paymentInProgress) {
-      alert("Page refresh detected. Payment cancelled.");
-      window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
-    }
-
-    //history.pushState(null, null, location.href);
-    //window.onpopstate = function () {
-      //blockNavigation();
-      //history.pushState(null, null, location.href);
-    //};
-
-    document.addEventListener('keydown', function (e) {
-      if (!paymentInProgress && (e.key === 'F5' || (e.ctrlKey && e.key === 'r'))) {
-        e.preventDefault();
-        blockNavigation();
-      }
-    });
-
-    window.addEventListener("beforeunload", function (e) {
-      if (!paymentInProgress) {
-        e.preventDefault();
-        e.returnValue = '';
-      }
-    });
 
     // Timer logic
     let timeLeft = 60;
