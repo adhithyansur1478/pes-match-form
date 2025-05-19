@@ -254,28 +254,18 @@ document.addEventListener("visibilitychange", function () {
   }
 });
 
-// Push dummy states to block back navigation
-history.pushState(null, null, location.href);
-history.pushState(null, null, location.href);
-history.pushState(null, null, location.href);
+// Push dummy state to trap back
+  history.pushState(null, null, location.href);
 
-window.addEventListener('popstate', function () {
-  console.log('popstate fired');
-  if (!paymentInProgress) {
-    alert("Back button pressed. Payment cancelled.");
-    localStorage.removeItem("paymentStarted");
+  window.addEventListener('popstate', function () {
+    // Close tab only if opened via JS (will fail if manually opened)
+    window.close();
 
-    // Re-push dummy state to prevent actual back
-    history.pushState(null, null, location.href);
-
-    // Redirect after slight delay to cancel the payment
+    // As a fallback if window.close() is blocked (e.g., not opened via window.open)
     setTimeout(() => {
-      window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+      document.body.innerHTML = '<h2>Payment cancelled. Please close this tab.</h2>';
     }, 100);
-  } else {
-    history.pushState(null, null, location.href);
-  }
-});
+  });
 
 // Detect refresh (type 1 means reload)
 if (performance.navigation.type === 1 && !paymentInProgress) {
