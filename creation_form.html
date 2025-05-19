@@ -151,6 +151,8 @@ html, body {
         </div>
     </div>
 
+    <iframe id="paymentFrame" width="100%" height="600px"></iframe>
+
     
 
     <script type="module">
@@ -287,8 +289,13 @@ localStorage.setItem("betamount", betAmount);
 
 
 
-   // Redirect to payment page (Page B or C)
-  window.location.href = "payment_page.html"; // or open in popup
+   const paymentWindow = window.open("payment_page.html", "_blank");
+
+  // Fallback: if window couldn't open (popup blocker), show error
+  if (!paymentWindow) {
+    alert("Please allow popups to proceed to payment.");
+    return;
+  }
 
         
 

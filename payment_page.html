@@ -246,16 +246,46 @@ localStorage.removeItem("betamount")
     let paymentInProgress = false;
 
 
-    // Push an extra state into history so back button can be detected
-history.pushState({ page: 1 }, "", "");
-
-window.onpopstate = function (event) {
-  if (!paymentInProgress) {
-    // User hit the back button before payment
-    alert("Payment cancelled.");
-    window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+    document.addEventListener("visibilitychange", function () {
+  if (document.visibilityState === 'hidden' && !paymentInProgress) {
+    console.log("User navigated away (possibly back swipe)");
+    alert("backkk")
   }
-};
+});
+
+
+
+
+
+// Push a dummy state so back button goes to this state first
+history.pushState(null, null, location.href);
+history.pushState(null, null, location.href);
+history.pushState(null, null, location.href);
+
+window.addEventListener('popstate', function (event) {
+  console.log('popstate fired');
+
+  if (!paymentInProgress) {
+    alert("Back button pressed. Payment cancelled.");
+    localStorage.removeItem("paymentStarted");
+    // Prevent going back by going forward again
+    history.pushState(null, null, location.href);
+    
+
+    // Redirect after a short delay (to let history settle)
+    setTimeout(() => {
+      window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+    }, 100);
+  } else {
+    // If payment in progress, re-push dummy state to stay on page
+    history.pushState(null, null, location.href);
+  }
+});
+
+
+
+
+
 
     // Block navigation only if payment is NOT in progress
     function blockNavigation() {
@@ -270,11 +300,11 @@ window.onpopstate = function (event) {
       window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
     }
 
-    history.pushState(null, null, location.href);
-    window.onpopstate = function () {
-      blockNavigation();
-      history.pushState(null, null, location.href);
-    };
+    //history.pushState(null, null, location.href);
+    //window.onpopstate = function () {
+      //blockNavigation();
+      //history.pushState(null, null, location.href);
+    //};
 
     document.addEventListener('keydown', function (e) {
       if (!paymentInProgress && (e.key === 'F5' || (e.ctrlKey && e.key === 'r'))) {
