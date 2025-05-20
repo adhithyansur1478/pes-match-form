@@ -172,8 +172,10 @@ function checkAvailability(betAmount) {
 if (paymentStarted === "true" && paymentSuccess !== "true") {
   alert("Payment was not completed. Redirecting...");
   localStorage.removeItem("paymentStarted");
-  updateAvailability(betAmount,"False")
-  window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+   updateAvailability(betAmount, "False")
+    .then(() => {
+      window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+    })
 }
 
     if (paymentSuccess === 'true') {
