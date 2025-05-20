@@ -239,16 +239,21 @@ function checkAvailability(betAmount) {
         console.log(`${betAmount}:`, isavail);
 
         // Update UI based on availability
-        if (isavail) {
+        if (isavail==="True") {
             liveInfo.innerHTML = `The Match for ₹${betAmount} is already available.<br>
                 Can't create a match when a match for the same amount already exists.<br>
                 Feel Free To Play That Match.`;
             submitBtn.disabled = true;
-        } else {
+        } else if(isavail==="False"){
             liveInfo.innerHTML = `You are choosing to have a match for: ₹${betAmount}<br>
                 Registration Fee: ₹${entryFee}<br>
                 Winning Amount: ₹${winningAmount}`;
             submitBtn.disabled = false;
+        }else if(isavail==="Partial"){
+            liveInfo.innerHTML = `The Match for ₹${betAmount} is being processed by another player.<br>
+                Can't create a match when a match for the same amount already exists.<br>
+                Feel Free To Play That Match.`;
+            submitBtn.disabled = true;
         }
     });
 });
@@ -286,7 +291,7 @@ localStorage.setItem("pesid", pesid);
 localStorage.setItem("phone", phn_num);
 localStorage.setItem("betamount", betAmount);
 
-
+ updateAvailability(betAmount,"Partial")
 
 
 window.location.href = "payment_page.html";
