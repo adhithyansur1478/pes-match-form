@@ -323,6 +323,7 @@ window.addEventListener("beforeunload", function (e) {
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
         alert("Time expired! Payment cancelled.");
+        updateAvailability(betAmount,"False")
         window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
       }
     }, 1000);
