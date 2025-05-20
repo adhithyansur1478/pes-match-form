@@ -124,6 +124,10 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        const pesid = localStorage.getItem("pesid");
+        const phn_num = localStorage.getItem("phone");
+        const betAmount = localStorage.getItem("betamount");
+
          const matchRef = ref(db, "responses");
         const avail_matchRef = ref(db, "av_match");
 
@@ -179,9 +183,7 @@ if (paymentStarted === "true" && paymentSuccess !== "true") {
         <p>Thank you for your payment. You can now close this page or continue.</p>
       `;
       // Page B (after redirect)
-const pesid = localStorage.getItem("pesid");
-const phn_num = localStorage.getItem("phone");
-const betAmount = localStorage.getItem("betamount");
+
 
 
 fetch("https://script.google.com/macros/s/AKfycbzHSQCHLBx1gFmyC7VwVQKqQonanvno550XrZWTWwz51fdvnKBUOUulj7cLOpQ5-Lsj/exec", {
@@ -252,6 +254,7 @@ document.addEventListener("visibilitychange", function () {
     alert("Payment cancelled due to closing of window.");
     localStorage.removeItem("paymentStarted");
     updateAvailability(betAmount,"False")
+    localStorage.removeItem("betamount")
     window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
   }
 });
@@ -266,6 +269,7 @@ window.addEventListener("popstate", () => {
   if (!paymentInProgress) {
     alert("Back detected. Payment cancelled.");
     updateAvailability(betAmount,"False")
+    localStorage.removeItem("betamount")
     redirectToCancel();
   } else {
     // Re-push state if payment is ongoing
@@ -278,6 +282,7 @@ window.addEventListener("popstate", () => {
 if (performance.navigation.type === 1 && !paymentInProgress) {
   alert("Page refresh detected. Payment cancelled.");
   updateAvailability(betAmount,"False")
+  localStorage.removeItem("betamount")
   window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
 }
 
@@ -287,6 +292,7 @@ document.addEventListener('keydown', function (e) {
     e.preventDefault();
     alert("Refresh blocked. Payment cancelled.");
     updateAvailability(betAmount,"False")
+    localStorage.removeItem("betamount")
     window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
   }
 });
@@ -296,6 +302,7 @@ window.addEventListener("beforeunload", function (e) {
   if (!paymentInProgress) {
     e.preventDefault();
     updateAvailability(betAmount,"False")
+    localStorage.removeItem("betamount")
     e.returnValue = ''; // Needed for Chrome
   }
 });
