@@ -87,11 +87,24 @@
 
                     if (matchData.status === "open") {
                         document.getElementById("form-container").style.display = "block";
-                    } else {
+                    }else if(matchData.status === "closed") {
                         document.getElementById("message").innerText = "This match is already taken.";
                         document.getElementById("message").style.display = "block";
                         document.getElementById("form-container").style.display = "none";
                     }
+
+                    else if(matchData.status==="partopen"){
+
+                        document.getElementById("message").innerText = "This match is being processed by another player";
+                        document.getElementById("message").style.display = "block";
+                        document.getElementById("form-container").style.display = "none";
+
+                    }else{
+                        document.getElementById("message").innerText = "Some error occured";
+                        document.getElementById("message").style.display = "block";
+                        document.getElementById("form-container").style.display = "none";
+                    }
+
                 } else {
                     document.getElementById("message").innerText = "Invalid match link.";
                     document.getElementById("message").style.display = "block";
@@ -109,38 +122,60 @@
                 const phone = document.getElementById("phone").value;
                 const roomNumber = document.getElementById("roomnumber").value;
 
-                get(matchRef).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const matchData = snapshot.val();
-                        var match_amnt = matchData.betamount
+                 if (!pesId) {
+        alert("Please enter your PES ID.");
+        return;
+    }
 
-                        const av_matchref = ref(db,"av_matches/" + match_amnt)
-                        update(av_matchref, { available: false });
+    if (!phone) {
+        alert("Please enter your Phone Number.");
+        return;
+    }
 
-                        if (matchData.status === "open") {
-                            // ✅ Update Firebase: Close Match
-                            update(matchRef, { status: "closed" });
+    if(phone.length<10||phone.length>10){
+        alert("Please enter a valid Phone Number without countrycode.");
+        return;
+    }
 
-                            // ✅ Store Form Data in match_accept
-                            set(matchAcceptRef, {
-                                pesid: pesId,
-                                phone: phone,
-                                room_number: roomNumber,
-                                timestamp: new Date().toISOString()
-                            }).then(() => {
-                                alert("Match successfully joined!");
-                                window.location.href = "match_full.html"; // Redirect to a confirmation page
-                            }).catch((error) => {
-                                console.error("Error saving data:", error);
-                            });
+                localStorage.setItem("pesid", pesId);
+                localStorage.setItem("phone", phone);
+                localStorage.setItem("roomnum",roomNumber);
+                localStorage.setItem("uqid",uniqueId);
 
-                        } else {
-                            alert("This match is already taken.");
-                        }
+
+                 get(matchRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const matchData = snapshot.val();
+                    console.log("Match data:", matchData);
+
+                    if (matchData.status === "open") {
+                        // ✅ Update Firebase: 
+                            update(matchRef, { status: "partopen" });
+                        window.location.href = "payment_pgg2.html";
+                    } else if(matchData.status === "closed"){
+                        document.getElementById("message").innerText = "This match is already taken.";
+                        document.getElementById("message").style.display = "block";
+                        document.getElementById("form-container").style.display = "none";
                     }
-                }).catch((error) => {
-                    console.error("Error checking match status:", error);
-                });
+                    else if(matchData.status==="partopen"){
+
+                        document.getElementById("message").innerText = "This match is being processed by another player";
+                        document.getElementById("message").style.display = "block";
+                        document.getElementById("form-container").style.display = "none";
+
+                    }
+                } else {
+                    document.getElementById("message").innerText = "Invalid match link.";
+                    document.getElementById("message").style.display = "block";
+                    document.getElementById("form-container").style.display = "none";
+                }
+            }).catch((error) => {
+                console.error("Error fetching match data:", error);
+            });
+                
+
+                
+                
             });
 
         } else {

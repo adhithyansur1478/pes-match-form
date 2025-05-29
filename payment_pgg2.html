@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment Page - PES Match Maker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
+  <style>
+    /* Reset and base styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      color: white;
+      background: linear-gradient(135deg, #1CB5E0, #000046);
+      animation: backgroundMove 5s infinite linear;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+    }
+    @keyframes backgroundMove {
+      0% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+
+    section {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+    }
+
+    .timer {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #1CB5E0;
+    }
+
+    .payment-info {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .payment-info p {
+      font-size: 1rem;
+      margin: 6px 0;
+    }
+
+    .pay-button {
+      background: #1CB5E0;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+      width: 100%;
+    }
+
+    .pay-button:hover {
+      background: #00a8cc;
+    }
+
+    @media (max-width: 500px) {
+      .pay-button {
+        font-size: 1rem;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  
+  <div class="container" id="content">
+    <!-- Payment UI will appear here if success param is missing -->
+  </div>
+
+  
+
+    
+
+  <script type="module">
+
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { push } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        // ✅ Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0XNxFP7npEaXDhhbynAl-4fcFXBSKlW4",
+            authDomain: "betproject-d69cd.firebaseapp.com",
+            databaseURL: "https://betproject-d69cd-default-rtdb.firebaseio.com",
+            projectId: "betproject-d69cd",
+            storageBucket: "betproject-d69cd.firebasestorage.app",
+            messagingSenderId: "991851561202",
+            appId: "1:991851561202:web:56244535a998336ce4906b",
+            measurementId: "G-3FHL5483T4"
+        };
+
+        // ✅ Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const pesid = localStorage.getItem("pesid");
+        const phn_num = localStorage.getItem("phone");
+        const roomnum = localStorage.getItem("roomnum");
+        const uniqueId = localStorage.getItem("uqid"); 
+
+         if (uniqueId) {
+            const matchRef = ref(db, "responses/" + uniqueId);
+            const matchAcceptRef = ref(db, "match_accept/" + uniqueId);
+
+         }
+
+         
+
+
+
+
+
+
+
+
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    const paymentSuccess = getQueryParam('success'); // expects 'true' if payment succeeded
+    const contentDiv = document.getElementById('content');
+
+    const paymentStarted = localStorage.getItem("paymentStarted");
+
+if (paymentStarted === "true" && paymentSuccess !== "true") {
+  alert("Payment was not completed. Redirecting...");
+  localStorage.removeItem("paymentStarted")
+   //updateAvailability(betAmount, "False")
+    .then(() => {
+      window.location.href = "https://adhithyansur1478.github.io/pes-match-form111111111111111/creation_form.html";
+    })
+}
+
+    if (paymentSuccess === 'true') {
+      // Show success message
+      contentDiv.innerHTML = `
+        <h1>✅ Payment Successful!</h1>
+        <p>Thank you for your payment. You can now close this page or continue.</p>
+      `;
+      // Page B (after redirect)
+
+
+
+get(matchRef).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const matchData = snapshot.val();
+                        var match_amnt = matchData.betamount
+
+                        const av_matchref = ref(db,"av_matches/" + match_amnt)
+                        update(av_matchref, { available: false });
+
+                        if (matchData.status === "partopen") {
+                            // ✅ Update Firebase: Close Match
+                            update(matchRef, { status: "closed" });
+
+                            // ✅ Store Form Data in match_accept
+                            set(matchAcceptRef, {
+                                pesId: pesId,
+                                phn_num: phone,
+                                roomnum: roomNumber,
+                                timestamp: new Date().toISOString()
+                            }).then(() => {
+                                alert("Match successfully joined!");
+                                window.location.href = "match_full.html"; // Redirect to a confirmation page
+                            }).catch((error) => {
+                                console.error("Error saving data:", error);
+                            });
+
+                        } else {
+                            alert("This match is already taken.");
+                        }
+                    }
+                }).catch((error) => {
+                    console.error("Error checking match status:", error);
+                });
+
+
+    }else {
+      // Show the original payment UI if payment not successful or param missing
+      contentDiv.innerHTML = `
+         <section>
+    <h1>Complete Your Payment</h1>
+    <div class="timer" id="timer">01:00</div>
+
+    <div class="payment-info" id="payment-info">
+      <p>Registration Fee: ₹20</p>
+      <p>Platform Fee: ₹5</p>
+      <p><strong>Total Payable: ₹25</strong></p>
+    </div>
+
+    <button class="pay-button" onclick="proceedToPayment()">Pay Now</button>
+  </section>
+      `;
+   let paymentInProgress = false;
+
+// Detect if user switches tab or goes to another app (useful on mobile)
+document.addEventListener("visibilitychange", function () {
+  if (document.visibilityState === 'hidden' && !paymentInProgress) {
+    console.log("User navigated away (possibly back gesture or tab switch)");
+    alert("Payment cancelled due to closing of window.");
+    localStorage.removeItem("paymentStarted");
+    //updateAvailability(betAmount,"False")
+     update(matchRef, { status: "open" })
+    localStorage.removeItem("betamount")
+    window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+  }
+});
+
+// Detect back button or navigation
+
+// Push dummy history states
+history.pushState(null, null, location.href);
+
+// Listen for back button press
+window.addEventListener("popstate", () => {
+  if (!paymentInProgress) {
+    alert("Back detected. Payment cancelled.");
+    //updateAvailability(betAmount,"False")
+     update(matchRef, { status: "open" })
+    localStorage.removeItem("betamount")
+    redirectToCancel();
+  } else {
+    // Re-push state if payment is ongoing
+    history.pushState(null, null, location.href);
+  }
+});
+
+
+// Detect refresh (type 1 means reload)
+if (performance.navigation.type === 1 && !paymentInProgress) {
+  alert("Page refresh detected. Payment cancelled.");
+  //updateAvailability(betAmount,"False")
+   update(matchRef, { status: "open" })
+  localStorage.removeItem("betamount")
+  window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+}
+
+// Detect keyboard reload (F5 or Ctrl+R)
+document.addEventListener('keydown', function (e) {
+  if (!paymentInProgress && (e.key === 'F5' || (e.ctrlKey && e.key === 'r'))) {
+    e.preventDefault();
+    alert("Refresh blocked. Payment cancelled.");
+    //updateAvailability(betAmount,"False")
+     update(matchRef, { status: "open" })
+    localStorage.removeItem("betamount")
+    window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+  }
+});
+
+// Warn before tab close or refresh
+window.addEventListener("beforeunload", function (e) {
+  if (!paymentInProgress) {
+    e.preventDefault();
+    //updateAvailability(betAmount,"False")
+     update(matchRef, { status: "open" })
+    localStorage.removeItem("betamount")
+    e.returnValue = ''; // Needed for Chrome
+  }
+});
+
+
+    // Timer logic
+    let timeLeft = 60;
+    const timerDisplay = document.getElementById("timer");
+
+    const timerInterval = setInterval(() => {
+      timeLeft--;
+      const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+      const seconds = String(timeLeft % 60).padStart(2, '0');
+      timerDisplay.textContent = `${minutes}:${seconds}`;
+
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        alert("Time expired! Payment cancelled.");
+        //updateAvailability(betAmount,"False")
+         update(matchRef, { status: "open" })
+        window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+      }
+    }, 1000);
+
+    // Payment button action
+    window.proceedToPayment = function() {
+      paymentInProgress = true;  // Disable blocking
+      localStorage.setItem("paymentStarted", "true"); // 👈 Set payment started
+      // Redirect to Razorpay payment page silently
+      window.location.href = "https://rzp.io/rzp/fjNkhqBK"; // Replace with your Razorpay link
+    }
+  }
+  </script>
+
+</body>
+</html>
