@@ -261,6 +261,7 @@ window.addEventListener("popstate", () => {
 // Detect refresh (type 1 means reload)
 if (performance.navigation.type === 1 && !paymentInProgress) {
   alert("Page refresh detected. Payment cancelled.");
+  localStorage.removeItem("paymentStarted");
   //updateAvailability(betAmount,"False")
    update(matchRef, { status: "open" })
   localStorage.removeItem("betamount")
