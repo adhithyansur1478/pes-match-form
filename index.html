@@ -151,7 +151,7 @@
                     if (matchData.status === "open") {
                         // ✅ Update Firebase: 
                             update(matchRef, { status: "partopen" });
-                        window.location.href = "payment_pgg2.html";
+                        window.location.replace("payment_pgg2.html");
                     } else if(matchData.status === "closed"){
                         document.getElementById("message").innerText = "This match is already taken.";
                         document.getElementById("message").style.display = "block";
