@@ -288,6 +288,7 @@ document.addEventListener('keydown', function (e) {
 window.addEventListener("beforeunload", function (e) {
   if (!paymentInProgress) {
     e.preventDefault();
+    alert("Tab Closed. Payment cancelled.");
     //updateAvailability(betAmount,"False")
      update(matchRef, { status: "open" })
     localStorage.removeItem("betamount")
