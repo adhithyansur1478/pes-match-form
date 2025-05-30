@@ -234,7 +234,10 @@ document.addEventListener("visibilitychange", function () {
     //updateAvailability(betAmount,"False")
      update(matchRef, { status: "open" })
     localStorage.removeItem("betamount")
-    window.location.href = "https://adhithyansur1478.github.io/pes-match-form/creation_form.html";
+    localStorage.removeItem("pesid")
+  localStorage.removeItem("phone")
+  window.location.href="https://adhithyansur1478.github.io/pes-match-form/?match_id="+uniqueId;
+    
   }
 });
 
@@ -250,6 +253,9 @@ window.addEventListener("popstate", () => {
     //updateAvailability(betAmount,"False")
      update(matchRef, { status: "open" })
     localStorage.removeItem("betamount")
+  localStorage.removeItem("pesid")
+  localStorage.removeItem("phone")
+  window.location.href="https://adhithyansur1478.github.io/pes-match-form/?match_id="+uniqueId;
     redirectToCancel();
   } else {
     // Re-push state if payment is ongoing
