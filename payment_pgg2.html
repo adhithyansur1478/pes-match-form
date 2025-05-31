@@ -157,10 +157,11 @@
 if (paymentStarted === "true" && paymentSuccess !== "true") {
   alert("Payment was not completed. Redirecting...");
   localStorage.removeItem("paymentStarted")
+  update(matchRef, { status: "open" })
    //updateAvailability(betAmount, "False")
-    .then(() => {
-      window.location.href = "https://adhithyansur1478.github.io/pes-match-form111111111111111/creation_form.html";
-    })
+    
+    window.location.href = "https://adhithyansur1478.github.io/pes-match-form111111111111111/creation_form.html";
+   
 }
 
     if (paymentSuccess === 'true') {
