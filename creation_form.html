@@ -294,7 +294,8 @@ localStorage.setItem("betamount", betAmount);
  updateAvailability(betAmount,"Partial")
 
 
-window.location.href = "payment_page.html";
+history.replaceState(null, null, location.href); // replace Page A with itself (clears its history state)
+window.location.replace("payment_page.html");
 
         
 
