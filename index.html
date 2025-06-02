@@ -153,7 +153,7 @@
                             update(matchRef, { status: "partopen" });
                         //window.location.replace("payment_pgg2.html")
                         history.replaceState(null, '', location.href); // replace Page A with itself (clears its history state)
-                        window.location.href = "payment_pgg2.html";
+                        window.location.replace("payment_pgg2.html");
                     } else if(matchData.status === "closed"){
                         document.getElementById("message").innerText = "This match is already taken.";
                         document.getElementById("message").style.display = "block";
