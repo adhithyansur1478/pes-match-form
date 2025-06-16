@@ -186,24 +186,25 @@ get(matchRef).then((snapshot) => {
                         const av_matchref = ref(db,"av_matches/" + match_amnt)
                         update(av_matchref, { available: false });
 
+                       
                         if (matchData.status === "partopen") {
-                            // ✅ Update Firebase: Close Match
-                            update(matchRef, { status: "closed" });
-
-                            // ✅ Store Form Data in match_accept
-                            set(matchAcceptRef, {
-                                pesid: pesId,
-                                phone: phhnum,
-                                room_number: roomnum,
-                                timestamp: new Date().toISOString()
-                            }).then(() => {
-                                alert("Match successfully joined!");
-                                window.location.href = "match_full.html"; // Redirect to a confirmation page
-                            }).catch((error) => {
-                                console.error("Error saving data:", error);
-                            });
-
-                        } else {
+    // ✅ Update Firebase: Close Match first, then write to match_accept
+    update(matchRef, { status: "closed" }).then(() => {
+        return set(matchAcceptRef, {
+            pesid: pesId,
+            phone: phhnum,
+            room_number: roomnum,
+            timestamp: new Date().toISOString()
+        });
+    }).then(() => {
+        alert("Match successfully joined!");
+        window.location.href = "match_full.html";
+    }).catch((error) => {
+        console.error("Error updating or saving match accept:", error);
+    });
+}
+                       
+                        else {
                             alert("This match is already taken.");
                         }
                     }
