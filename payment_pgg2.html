@@ -163,12 +163,10 @@ if (paymentStarted === "true" && paymentSuccess !== "true") {
     if (paymentSuccess === 'true') {
       const matchRefString = matchAcceptRef.toString(); // Convert to string
       // Show success message
-      alert("Setting match accept data to: " + matchAcceptRef.toString());
 
         contentDiv.innerHTML = `
     <h1>✅ Payment Successful!</h1>
-    <p>Thank youuuuuuuuuuuu for your payment. You can now close this page or continue.</p>
-    <p><strong>Match Accept Path:</strong> ${matchRefString}</p>
+    <p>Thank you for your payment. You can now close this page or continue.</p>
   `;
       // Page B (after redirect)
 
@@ -332,7 +330,7 @@ window.addEventListener("beforeunload", function (e) {
       paymentInProgress = true;  // Disable blocking
       localStorage.setItem("paymentStarted", "true"); // 👈 Set payment started
       // Redirect to Razorpay payment page silently
-      window.location.href = "https://rzp.io/rzp/fjNkhqBK"; // Replace with your Razorpay link
+      window.location.href = "https://rzp.io/rzp/9BupZLIX"; // Replace with your Razorpay link
     }
   }
   </script>
