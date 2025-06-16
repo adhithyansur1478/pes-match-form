@@ -124,8 +124,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        const pesid = localStorage.getItem("pesid");
-        const phn_num = localStorage.getItem("phone");
+        const pesId = localStorage.getItem("pesid");
+        const phhnum = localStorage.getItem("phone");
         const roomnum = localStorage.getItem("roomnum");
         const uniqueId = localStorage.getItem("uqid"); 
 
@@ -192,9 +192,9 @@ get(matchRef).then((snapshot) => {
 
                             // ✅ Store Form Data in match_accept
                             set(matchAcceptRef, {
-                                pesId: pesId,
-                                phn_num: phone,
-                                roomnum: roomNumber,
+                                pesid: pesId,
+                                phone: phhnum,
+                                room_number: roomnum,
                                 timestamp: new Date().toISOString()
                             }).then(() => {
                                 alert("Match successfully joined!");
