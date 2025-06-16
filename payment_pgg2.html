@@ -187,9 +187,11 @@ get(matchRef).then((snapshot) => {
                         update(av_matchref, { available: false });
 
                        
-                        if (matchData.status === "partopen") {
+  if (matchData.status === "partopen") {
     // ✅ Update Firebase: Close Match first, then write to match_accept
     update(matchRef, { status: "closed" }).then(() => {
+      console.log("Setting match accept data to:", matchAcceptRef.toString());
+
         return set(matchAcceptRef, {
             pesid: pesId,
             phone: phhnum,
