@@ -161,13 +161,15 @@ if (paymentStarted === "true" && paymentSuccess !== "true") {
 }
 
     if (paymentSuccess === 'true') {
+      const matchRefString = matchAcceptRef.toString(); // Convert to string
       // Show success message
       alert("Setting match accept data to: " + matchAcceptRef.toString());
 
-      contentDiv.innerHTML = `
-        <h1>✅ Payment Successful!</h1>
-        <p>Thank you for your payment. You can now close this page or continue.</p>
-      `;
+        contentDiv.innerHTML = `
+    <h1>✅ Payment Successful!</h1>
+    <p>Thank you for your payment. You can now close this page or continue.</p>
+    <p><strong>Match Accept Path:</strong> ${matchRefString}</p>
+  `;
       // Page B (after redirect)
 
 
