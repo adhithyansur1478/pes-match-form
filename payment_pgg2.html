@@ -162,7 +162,8 @@ if (paymentStarted === "true" && paymentSuccess !== "true") {
 
     if (paymentSuccess === 'true') {
       // Show success message
-      alert("Setting match accept data to:", matchAcceptRef.toString());
+      alert("Setting match accept data to: " + matchAcceptRef.toString());
+
       contentDiv.innerHTML = `
         <h1>✅ Payment Successful!</h1>
         <p>Thank you for your payment. You can now close this page or continue.</p>
